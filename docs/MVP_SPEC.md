@@ -4,75 +4,86 @@
 
 Validate one complete monetization loop before expanding the product:
 
-`acquisition → condition input → recommendation/comparison → product detail → affiliate click → conversion → revenue`
+`acquisition → condition input → recommendation/comparison → product detail → affiliate click → conversion → revenue → net profit`
 
-## 2. MVP scope
+Primary success criterion is **net profit per operating hour**, not traffic volume.
 
-### Required
+## 2. Required MVP
+
 - Mobile-first landing page
-- Product selection/decision flow
-- Condition inputs
-- Recommendation result with reasons
-- Product cards
-- Affiliate CTA
-- Basic event tracking
-- SEO-friendly content pages
-- Privacy / disclosure / affiliate disclosure surfaces as required
+- Minimum condition selector
+- Deterministic recommendation/decision flow
+- Recommendation reasons understandable to the user
+- Product cards and product detail
+- Affiliate CTA for confirmed offers only
+- Stable event tracking
+- SEO-friendly content/comparison routes
+- Required privacy and advertising/affiliate disclosure surfaces
+- Safe loading, empty, stale/unverified, unavailable-offer and error states
 
-### Not required initially
+## 3. Explicitly defer
+
 - User accounts
 - Complex personalization history
 - Full cosmetic ingredient graph
 - Native app
 - Large-scale automated crawling
 - Paid advertising
+- Opaque LLM-only recommendation
+- Features without a measurable path to validation or revenue
 
-## 3. Data boundary
+## 4. Data boundary
 
-Notion remains the business-data source of truth. The application should consume structured data without creating a second manually maintained product database.
+Notion is the business-data source of truth. The application consumes structured Notion-backed data. Do not create a second manually maintained product/article/affiliate database in GitHub.
 
-## 4. Decision model
+Canonical business databases:
+- 商品DB
+- 比較DB
+- 記事DB
+- アフィリエイトDB
+- SNS投稿DB
+- 06_EXPERIMENTS / Experiments DB
+- 運用ログDB
 
-Initial recommendation score should be explicit and auditable. Candidate dimensions:
+## 5. Decision model
 
-- target match
-- concern/purpose match
-- budget fit
-- ingredient/feature fit
-- evidence/data completeness
-- affiliate availability
+The initial recommendation score is explicit and auditable. Candidate dimensions:
 
-Do not present a score as scientifically validated. It is a product-selection heuristic until user outcome data validates it.
+1. target match
+2. concern/purpose match
+3. budget fit
+4. ingredient/feature fit
+5. evidence/data completeness/freshness
+6. purchase availability
+7. affiliate economics only as a tie-breaker
 
-## 5. Measurement
+The score is a product-selection heuristic, not scientifically validated efficacy. Do not make medical or guaranteed-effect claims.
+
+## 6. Measurement
 
 Track at minimum:
+- `view_landing`
+- `start_selector`
+- `complete_selector`
+- `view_recommendation`
+- `view_product`
+- `affiliate_click`
+- `conversion`
 
-- landing view
-- decision-flow start
-- decision-flow completion
-- recommendation view
-- product detail click
-- affiliate click
-- conversion/revenue when available
+Funnel:
+`landing → selector → recommendation → product → affiliate_click → conversion`
 
-Primary business KPI: `net profit / operating hour`.
-Secondary KPIs: conversion rate, affiliate CTR, revenue per visitor, reproducibility, acquisition cost, and retention/revisit where measurable.
+Primary KPI: `net profit / operating hour`.
+Secondary KPIs: recommendation completion rate, product-detail rate, affiliate CTR, conversion rate, revenue/visitor, acquisition cost, reproducibility, and revisit/retention where measurable.
 
-## 6. Experimentation
+## 7. Experimentation
 
-Every meaningful experiment must have:
+Use 06_EXPERIMENTS / Experiments DB as the only experiment record. Every experiment should capture hypothesis, execution/change, observation, result, decision, next change, cost, operating time, and net profit/hour where measurable.
 
-- hypothesis
-- change
-- target metric
-- observation window
-- result
-- decision
-- next change
+Initial hypotheses cover problem-led social acquisition, A/B comparison hooks, diagnostic matching, high-purchase-intent search, trend products, high-value affiliate offers, participation/poll content, influencer-mentioned products, social-demand→SEO conversion, and proprietary selection-data accumulation.
 
-Stop weak channels and themes rather than accumulating content for its own sake.
+Stop weak themes/channels and concentrate resources on measurable winners.
 
-## 7. Implementation handoff
+## 8. Implementation handoff
 
-Codex should implement this specification incrementally, run tests/build checks, and report changed files and remaining blockers.
+Codex should first read `docs/IMPLEMENTATION_HANDOFF.md`, `docs/CODEX_TASKS.md`, `docs/ARCHITECTURE.md`, and `docs/NOTION_CONTRACT.md`. It must inspect the current repository before changing code, implement in dependency order, run all available checks, and report changed files and blockers.
