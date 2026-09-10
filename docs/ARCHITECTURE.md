@@ -4,7 +4,15 @@
 
 `Browser → Next.js app → business-data adapter → Notion`
 
-Analytics should be abstracted behind an event interface so the provider can change without rewriting the product flow.
+Analytics is abstracted behind an event interface so the provider can change without rewriting product flow.
+
+## Source-of-truth boundary
+
+- Notion: product/comparison/article/affiliate/SNS/experiment/operations data.
+- GitHub: application code and technical configuration.
+- Vercel: deployment/runtime configuration.
+
+Do not copy business data into a manually maintained GitHub dataset.
 
 ## Layers
 
@@ -16,31 +24,54 @@ Analytics should be abstracted behind an event interface so the provider can cha
 - Product detail
 - Comparison
 - Content
+- Disclosure/privacy surfaces
 
 ### Decision engine
 
-Pure functions only for the initial scoring logic. Inputs and outputs should be serializable and testable.
+Pure deterministic functions for initial scoring. Inputs and outputs must be serializable and testable. Recommendation reasons must be explainable.
+
+Priority order:
+1. condition fit
+2. evidence/data freshness
+3. price/value fit
+4. purchase availability
+5. affiliate economics as a tie-breaker
 
 ### Data adapter
 
-Maps Notion business records into application-safe domain objects. Validation happens at the boundary.
+Maps Notion business records into application-safe domain objects. Validate required fields at the boundary. Preserve data-state/freshness; do not silently infer missing facts.
 
 ### Analytics
 
-Emit stable event names from `NOTION_CONTRACT.md`. Avoid embedding provider-specific calls throughout UI components.
+Emit the stable event vocabulary from `NOTION_CONTRACT.md`:
+`view_landing`, `start_selector`, `complete_selector`, `view_recommendation`, `view_product`, `affiliate_click`, `conversion`.
+
+Keep provider-specific calls behind one analytics interface.
 
 ### Content
 
-Route and metadata structure should support future data-driven pages without requiring a redesign.
+Routes and metadata must support data-driven comparison/product pages backed by Notion. Content should not require a separate manually maintained content database in code.
 
 ## Security / reliability
 
 - Never expose private credentials in client code.
 - Never hard-code secrets into the repository.
 - Validate external data before rendering.
-- Handle missing/invalid records gracefully.
-- Keep affiliate links configurable.
+- Handle missing, stale, unverified, or invalid records gracefully.
+- Render affiliate links only for confirmed offers.
+- Do not collect unnecessary personally identifying information.
 
 ## Cost principle
 
-Prefer free/low-cost infrastructure during validation. Do not add infrastructure whose cost cannot be justified by measured incremental profit or required reliability.
+Prefer free/low-cost infrastructure during validation. Add recurring infrastructure only when measured incremental profit or required reliability justifies it.
+
+## Testing priorities
+
+- deterministic scoring
+- missing/invalid data
+- stale/unverified data
+- empty datasets
+- affiliate-link gating
+- stable analytics event emission
+- mobile rendering
+- production build
