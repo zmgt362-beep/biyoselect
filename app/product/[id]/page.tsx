@@ -1,8 +1,20 @@
 import Link from 'next/link';
+import { getCatalog } from '@/lib/notion/catalog';
 
-const products:Record<string,{name:string;price:string;description:string}>= {
- 'sample-a':{name:'サンプル美容液 A',price:'〜5,000円',description:'開発・UI検証用のサンプル商品です。実在商品の掲載時にはNotionの商品DBを正として置き換えます。'},
- 'sample-b':{name:'サンプル美容液 B',price:'5,000〜10,000円',description:'開発・UI検証用のサンプル商品です。'},
- 'sample-c':{name:'サンプル美容液 C',price:'〜2,000円',description:'開発・UI検証用のサンプル商品です。'}
-};
-export default async function Product({params}:{params:Promise<{id:string}>}){const {id}=await params;const p=products[id];if(!p)return <main className="container result"><h1>商品が見つかりません</h1><Link href="/select">選び直す</Link></main>;return <main className="container result"><Link href="/result">← 結果に戻る</Link><div className="card"><p className="muted">商品詳細</p><h1>{p.name}</h1><p>{p.description}</p><p>価格帯：{p.price}</p><p className="muted">広告・アフィリエイトリンクは実案件確認後に設定します。</p></div></main>}
+export default async function Product({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const product = (await getCatalog()).find((item) => item.id === id);
+  if (!product) return <main className="container result"><h1>商品が見つかりません</h1><Link href="/select">選び直す</Link></main>;
+
+  return <main className="container result">
+    <Link href="/select">← 条件を変える</Link>
+    <div className="card">
+      <p className="muted">商品詳細</p>
+      <h1>{product.name}</h1>
+      <p>{product.brand}</p>
+      <p>{product.priceYen ? `${product.priceYen.toLocaleString()}円` : '価格情報なし'}</p>
+      <p>悩み適合：{product.concerns.length ? product.concerns.join(' / ') : '未分類'}</p>
+      {product.affiliateConfirmed ? <><p className="muted">本ページにはアフィリエイト広告を含みます。</p><Link className="cta" href={`/go/${product.id}`}>販売ページを見る</Link></> : <p className="muted">現在、確認済みのアフィリエイト案件はありません。</p>}
+    </div>
+  </main>;
+}
