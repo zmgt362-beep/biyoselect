@@ -25,14 +25,15 @@ SNS・検索などで発生した購入意図を、比較・診断・推薦に�
 
 Codexは必須ではない。無料/オープンソースのコーディングエージェント、またはGitHub上での直接実装へ切り替え可能とする。コーディングエージェントは交換可能な実装手段であり、プロジェクトの仕様・データ構造を特定ツールに依存させない。
 
-実装方針の詳細: `docs/AI_IMPLEMENTATION_PLAN.md`
-
 ## Current status
 
 - Business model: defined
 - Notion data foundation: available
 - GitHub repository: initialized
 - Codex dependency: removed
-- Vercel project: not yet created
-- MVP implementation: not started
-- Next implementation target: minimal working decision flow
+- MVP specification: defined
+- MVP UI skeleton: implemented (landing → selector → result → product)
+- Sample data: development-only placeholders
+- Automated build/browser verification: not yet run in this environment
+- Vercel project: not yet created/verified
+- Next target: deterministic scoring + Notion data adapter + event interface
