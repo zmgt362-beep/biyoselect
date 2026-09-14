@@ -1,0 +1,1 @@
+This file intentionally contains no application configuration. Test tooling is documented in .github/workflows/ci.yml and jest.config.cjs.
