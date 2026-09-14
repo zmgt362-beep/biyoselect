@@ -1,10 +1,14 @@
-# Codex Task Queue
+# AI Coding Agent Task Queue
 
-Status: READY. Execute only after the current Codex usage limit resets.
+Status: READY FOR IMPLEMENTATION. The coding agent is replaceable; Codex is not a prerequisite.
+
+## Operating principle: TTP
+
+Use **TTP（徹底的にパクる）** as a product and implementation principle: study proven successful examples, extract their effective structure/patterns, and reproduce the underlying user-value and execution patterns as closely as legally and ethically appropriate. Do not copy protected text, images, code, trademarks, or distinctive creative expression without permission. Prefer proven patterns over speculative originality.
 
 ## P0 — MVP
 
-1. **Repository audit** — read `docs/IMPLEMENTATION_HANDOFF.md`, `MVP_SPEC.md`, `ARCHITECTURE.md`, and `NOTION_CONTRACT.md`; inspect current files before editing.
+1. **Repository audit** — read the implementation docs and inspect current files before editing.
 2. Bootstrap the web app in the repository using the agreed framework.
 3. Build a mobile-first BIYOSELECT landing page.
 4. Build the minimum condition selector flow.
