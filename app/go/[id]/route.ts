@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCatalog } from "@/lib/notion/catalog";
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const products = await getCatalog();
   const product = products.find((item) => item.id === id);
@@ -9,6 +9,14 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   if (!product?.affiliateConfirmed || !product.affiliateUrl) {
     return NextResponse.json({ ok: false, reason: "affiliate_offer_unavailable" }, { status: 404 });
   }
+
+  const referrer = request.headers.get("referer") ?? "unknown";
+  console.info("affiliate_click", {
+    productId: product.id,
+    productName: product.name,
+    referrer,
+    occurredAt: new Date().toISOString(),
+  });
 
   return NextResponse.redirect(product.affiliateUrl, 302);
 }
