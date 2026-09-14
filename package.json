@@ -9,6 +9,7 @@
     "test": "jest --runInBand"
   },
   "dependencies": {
+    "@notionhq/client": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
