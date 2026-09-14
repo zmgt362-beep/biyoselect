@@ -23,12 +23,16 @@ SNS・検索などで発生した購入意図を、比較・診断・推薦に�
 
 ## Development
 
-Codex is responsible for implementation, testing, and GitHub changes. ChatGPT is responsible for research, strategy, specifications, and intermediate decisions.
+Codexは必須ではない。無料/オープンソースのコーディングエージェント、またはGitHub上での直接実装へ切り替え可能とする。コーディングエージェントは交換可能な実装手段であり、プロジェクトの仕様・データ構造を特定ツールに依存させない。
+
+実装方針の詳細: `docs/AI_IMPLEMENTATION_PLAN.md`
 
 ## Current status
 
 - Business model: defined
 - Notion data foundation: available
 - GitHub repository: initialized
+- Codex dependency: removed
 - Vercel project: not yet created
-- MVP implementation: specification stage / Codex continuation required
+- MVP implementation: not started
+- Next implementation target: minimal working decision flow
