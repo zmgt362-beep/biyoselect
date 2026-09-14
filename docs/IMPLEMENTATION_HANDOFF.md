@@ -1,6 +1,6 @@
 # BIYOSELECT — Implementation Handoff
 
-Status: **READY FOR CODEX IMPLEMENTATION** once the current Codex usage limit resets.
+Status: **READY FOR IMPLEMENTATION**. The coding agent is replaceable; Codex is not a prerequisite.
 
 ## 1. Source of truth
 
@@ -8,7 +8,11 @@ Status: **READY FOR CODEX IMPLEMENTATION** once the current Codex usage limit re
 - GitHub: application code and technical configuration.
 - Do not duplicate product/article/affiliate/SNS/experiment business data in GitHub.
 
-## 2. MVP outcome
+## 2. Operating principle: TTP
+
+Use **TTP（徹底的にパクる）**: study proven successful examples, extract the structures and patterns responsible for their results, and reproduce those patterns as closely as legally and ethically appropriate. Do not copy protected text, images, code, trademarks, or distinctive creative expression without permission. Proven patterns take priority over speculative originality.
+
+## 3. MVP outcome
 
 Build the smallest public loop that can prove monetization:
 
@@ -16,7 +20,7 @@ Build the smallest public loop that can prove monetization:
 
 Primary business KPI: **net profit per hour**, not page views.
 
-## 3. Notion data model
+## 4. Notion data model
 
 ### Product DB
 Canonical fields include:
@@ -123,7 +127,7 @@ Track:
 
 Decision values: `継続 / 改善 / 撤退`.
 
-## 4. Recommendation logic
+## 5. Recommendation logic
 
 For MVP, use explainable rule-based scoring rather than an opaque LLM recommendation.
 
@@ -136,7 +140,7 @@ Priority:
 
 Never recommend a worse-fit product solely because its affiliate reward is higher.
 
-## 5. Measurement
+## 6. Measurement
 
 Track distinct events:
 - landing/entry
@@ -148,14 +152,14 @@ Track distinct events:
 
 Avoid collecting personally identifying information.
 
-## 6. Compliance
+## 7. Compliance
 
 - Clearly disclose advertising/affiliate relationships where required.
 - Follow applicable Japanese advertising, consumer-protection and pharmaceutical/medical-claim rules, ASP rules, and platform rules.
 - Never invent price, reward, availability, efficacy, or approval status.
 - Never make medical or guaranteed efficacy claims.
 
-## 7. Implementation order
+## 8. Implementation order
 
 1. Next.js project/base layout
 2. Notion data access layer
@@ -169,7 +173,7 @@ Avoid collecting personally identifying information.
 10. Tests
 11. Vercel deployment preparation
 
-## 8. Definition of done
+## 9. Definition of done
 
 - `npm run build` succeeds.
 - Existing lint/typecheck/test commands pass.
@@ -181,10 +185,11 @@ Avoid collecting personally identifying information.
 - Measurement events are not duplicated.
 - UI data matches Notion canonical data.
 
-## 9. Codex operating rules
+## 10. Coding-agent operating rules
 
 - Read this file and the existing docs before changing code.
 - Inspect the repository before assuming any file exists.
+- Apply TTP by studying proven implementations and UX patterns before inventing new patterns.
 - Do not introduce unrelated architecture or large features.
 - Do not hard-code business data.
 - Do not guess missing data.
@@ -193,6 +198,6 @@ Avoid collecting personally identifying information.
 - Run tests/build after meaningful changes.
 - Report blockers and exact next action.
 
-## 10. First task after limit reset
+## 11. First implementation task
 
 Compare the current repository against this handoff and `docs/MVP_SPEC.md`, `docs/NOTION_CONTRACT.md`, and `docs/ARCHITECTURE.md`. Resolve conflicts in favor of the latest confirmed Notion architecture and this handoff. Then implement only the minimum missing MVP pieces in dependency order.
