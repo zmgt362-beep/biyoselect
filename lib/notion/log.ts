@@ -19,13 +19,7 @@ export async function logAffiliateClick(input: {
       parent: { data_source_id: LOG_DATA_SOURCE_ID },
       properties: {
         ログ: {
-          title: [
-            {
-              text: {
-                content: `affiliate_click｜${input.productName}`,
-              },
-            },
-          ],
+          title: [{ text: { content: `affiliate_click｜${input.productName}` } }],
         },
         内容: {
           rich_text: [
@@ -45,7 +39,7 @@ export async function logAffiliateClick(input: {
           date: { start: input.occurredAt },
         },
         種別: {
-          select: { name: "成果" },
+          select: { name: "検証" },
         },
         関連: {
           rich_text: [{ text: { content: input.productId } }],
