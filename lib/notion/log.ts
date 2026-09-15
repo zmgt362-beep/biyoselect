@@ -1,8 +1,18 @@
+import { Redis } from "@upstash/redis";
 import { Client } from "@notionhq/client";
 
 const LOG_DATA_SOURCE_ID = "77c8fe85-6130-4752-95bd-ee2392525cfc";
+const CLICK_DEDUP_TTL_SECONDS = 60 * 60 * 24 * 30;
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
+
+function getRedis() {
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+    return null;
+  }
+
+  return Redis.fromEnv();
+}
 
 export async function logAffiliateClick(input: {
   clickId: string;
@@ -15,19 +25,25 @@ export async function logAffiliateClick(input: {
     return;
   }
 
+  const redis = getRedis();
+  if (!redis) {
+    console.error("affiliate_click_dedup_unavailable", {
+      reason: "UPSTASH_REDIS_REST_URL or UPSTASH_REDIS_REST_TOKEN is missing",
+      clickId: input.clickId,
+    });
+    return;
+  }
+
   try {
-    // One rendered product page gets one unique clickId. If the browser,
-    // crawler, or redirect path retries the same URL, do not count it twice.
-    const existing = await notion.dataSources.query({
-      data_source_id: LOG_DATA_SOURCE_ID,
-      filter: {
-        property: "関連",
-        rich_text: { equals: input.clickId },
-      },
-      page_size: 1,
+    // SET NX is atomic. Concurrent requests carrying the same clickId can
+    // therefore produce at most one Notion log.
+    const dedupKey = `biyoselect:affiliate_click:${input.clickId}`;
+    const acquired = await redis.set(dedupKey, "1", {
+      nx: true,
+      ex: CLICK_DEDUP_TTL_SECONDS,
     });
 
-    if (existing.results.length > 0) {
+    if (acquired !== "OK") {
       console.info("affiliate_click_duplicate_ignored", {
         clickId: input.clickId,
         productId: input.productId,
