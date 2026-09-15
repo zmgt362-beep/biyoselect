@@ -21,7 +21,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     occurredAt,
   });
 
-  void logAffiliateClick({
+  await logAffiliateClick({
     productId: product.id,
     productName: product.name,
     referrer,
