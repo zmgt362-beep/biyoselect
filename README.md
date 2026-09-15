@@ -25,15 +25,25 @@ SNS・検索などで発生した購入意図を、比較・診断・推薦に�
 
 Codexは必須ではない。無料/オープンソースのコーディングエージェント、またはGitHub上での直接実装へ切り替え可能とする。コーディングエージェントは交換可能な実装手段であり、プロジェクトの仕様・データ構造を特定ツールに依存させない。
 
-## Current status
+## Current status (2026-09-16)
 
 - Business model: defined
 - Notion data foundation: available
 - GitHub repository: initialized
-- Codex dependency: removed
-- MVP specification: defined
-- MVP UI skeleton: implemented (landing → selector → result → product)
-- Sample data: development-only placeholders
-- Automated build/browser verification: not yet run in this environment
-- Vercel project: not yet created/verified
-- Next target: deterministic scoring + Notion data adapter + event interface
+- MVP UI: deployed to Vercel
+- Production build: passing
+- Vercel ↔ GitHub: connected
+- Vercel `NOTION_TOKEN`: configured
+- Notion product data adapter: working in production
+- Product recommendation flow: working in production
+- Product detail → affiliate destination: manually verified
+- Current catalog: only confirmed products are eligible for recommendation
+- Affiliate click logging: server console logging exists; persistent aggregation is not yet implemented
+- Conversion tracking: not yet validated with an actual A8 conversion
+
+## Next priorities
+
+1. Validate affiliate click logging and make measurement persistent enough for MVP operations.
+2. Increase the number of verified products without inventing unverified product data.
+3. Publish the first SNS acquisition test and measure click-through to BIYOSELECT.
+4. Optimize the first-revenue path based on actual clicks and A8 results.
