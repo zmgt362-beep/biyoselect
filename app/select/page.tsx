@@ -1,57 +1,15 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { trackEvent } from '@/lib/analytics/events';
-
-const steps = [
-  { key: 'concern', title: '一番解決したい悩みは？', options: ['毛穴', '乾燥', 'シミ・くすみ', '皮脂・テカリ'] },
-  { key: 'skinType', title: '自分の肌質に一番近いのは？', options: ['脂性肌・テカりやすい', '乾燥しやすい', '混合肌', 'よく分からない'] },
-  { key: 'symptom', title: '特に気になる状態は？', options: ['黒ずみ・詰まり', 'カサつき・つっぱり', 'くすみ・色ムラ', 'ベタつき・テカり'] },
-  { key: 'budget', title: '1商品にかけられる予算は？', options: ['〜2,000円', '2,000〜5,000円', '5,000〜10,000円', '10,000円〜'] },
-  { key: 'priority', title: '商品選びで一番重視するのは？', options: ['効果・機能', 'コスパ', '成分'] },
-  { key: 'routine', title: '使い続けやすさはどれくらい重視する？', options: ['かなり重視', 'ある程度重視', '価格や効果を優先'] },
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {trackEvent} from '@/lib/analytics/events';
+const qs=[
+{title:'美容の悩み、どっちに近い？',a:'気になる悩みがハッキリしている',b:'肌全体の調子を整えたい',aCode:'P',bCode:'D'},
+{title:'商品を選ぶときは？',a:'成分や機能を詳しく見る',b:'口コミや評判をまず見る',aCode:'A',bCode:'G'},
+{title:'美容アイテムは？',a:'効果を優先して選びたい',b:'肌へのやさしさを優先したい',aCode:'S',bCode:'D'},
+{title:'買い物では？',a:'価格をかなり重視する',b:'価格より納得感を重視する',aCode:'R',bCode:'I'}
 ];
-
-const concernMap: Record<string, string> = { '毛穴': 'pores', '乾燥': 'dryness', 'シミ・くすみ': 'spots', '皮脂・テカリ': 'oiliness' };
-const symptomConcernMap: Record<string, string> = { '黒ずみ・詰まり': 'pores', 'カサつき・つっぱり': 'dryness', 'くすみ・色ムラ': 'spots', 'ベタつき・テカり': 'oiliness' };
-const budgetMap: Record<string, string> = { '〜2,000円': 'low', '2,000〜5,000円': 'low', '5,000〜10,000円': 'mid', '10,000円〜': 'high' };
-const priorityMap: Record<string, string> = { '効果・機能': 'fit', 'コスパ': 'value', '成分': 'ingredients' };
-
-export default function SelectPage() {
-  const router = useRouter();
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const current = steps[step];
-
-  const choose = (value: string) => {
-    const next = { ...answers, [current.key]: value };
-    setAnswers(next);
-    if (step === 0) trackEvent('start_selector');
-
-    if (step === steps.length - 1) {
-      trackEvent('complete_selector');
-      const concern = symptomConcernMap[next.symptom] ?? concernMap[next.concern];
-      const qs = new URLSearchParams({
-        concern,
-        budget: budgetMap[next.budget],
-        priority: priorityMap[next.priority],
-      });
-      router.push(`/result?${qs.toString()}`);
-    } else {
-      setStep(step + 1);
-    }
-  };
-
-  return (
-    <main className="container result">
-      <p className="muted">肌悩み診断　{step + 1} / {steps.length}</p>
-      <h1>{current.title}</h1>
-      <p className="muted">回答内容をもとに、条件に合う商品を絞り込みます。</p>
-      <div className="options">
-        {current.options.map((option) => (
-          <button className="option" key={option} onClick={() => choose(option)}>{option}</button>
-        ))}
-      </div>
-    </main>
-  );
+export default function SelectPage(){
+const router=useRouter();const [step,setStep]=useState(0);const [answers,setAnswers]=useState<string[]>([]);const q=qs[step];
+const choose=(code:string)=>{const next=[...answers,code];if(step===0)trackEvent('start_selector');if(step===qs.length-1){const type=next.join('-');trackEvent('complete_selector',{type_code:type});const concern=next[0]==='P'?'pores':'dryness';const priority=next[1]==='A'?'ingredients':'value';const budget=next[3]==='R'?'low':'mid';router.push('/result?'+new URLSearchParams({type,concern,priority,budget}).toString());}else{setAnswers(next);setStep(step+1);}};
+return <main className='diagnosis-shell'><section className='diagnosis-card'><div className='diagnosis-top'><span>BIYOSELECT</span><span>{step+1} / {qs.length}</span></div><div className='progress'><span style={{width:((step+1)/qs.length*100)+'%'}}/></div><p className='diagnosis-kicker'>BEAUTY TYPE診断</p><h1>{q.title}</h1><p className='diagnosis-sub'>直感で近いほうを選んでください。</p><div className='binary-options'><button onClick={()=>choose(q.aCode)}><b>A</b><span>{q.a}</span></button><button onClick={()=>choose(q.bCode)}><b>B</b><span>{q.b}</span></button></div><p className='diagnosis-note'>全4問・約30秒</p></section></main>;
 }
