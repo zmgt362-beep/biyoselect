@@ -58,7 +58,7 @@ export default function SelectPage(){
 
       trackEvent('complete_selector',{type_code:type});
       const priority=selection==='A'?'ingredients':'value';
-      const budget=budgetCode==='R'?'low':'mid';
+      const budget=budgetCode==='R'?'low':'high';
 
       router.push('/result?'+new URLSearchParams({type,concern,priority,budget}).toString());
       return;
