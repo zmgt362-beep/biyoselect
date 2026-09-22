@@ -1,5 +1,2 @@
 import Link from 'next/link';
-
-export default function Home() {
-  return <main className="container hero"><section><div className="eyebrow">BIYOSELECT</div><h1>美容商品、<br/>結局どれ？</h1><p>悩み・予算・優先順位から、あなたに合う候補を絞り込みます。</p><Link className="cta" href="/select">選び始める</Link></section></main>;
-}
+export default function Home(){return <main className='home'><section className='home-card'><p className='diagnosis-kicker'>BIYOSELECT / BEAUTY TYPE</p><h1>あなたの美容タイプ、<br/><em>何型？</em></h1><p>たった4問・約30秒。<br/>あなたの美容の選び方を16タイプに分類。</p><Link className='cta big' href='/select'>診断してみる →</Link><p className='home-note'>診断結果から、あなたに合う美容アイテムもチェック。</p></section></main>}
