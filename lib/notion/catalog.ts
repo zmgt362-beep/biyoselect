@@ -45,6 +45,7 @@ function concerns(raw: string): Product["concerns"] {
   if (/皮脂|テカ|脂性|油/.test(value)) result.push("oiliness");
   if (/乾燥|うるおい|保湿/.test(value)) result.push("dryness");
   if (/シミ|くすみ|色素|美白/.test(value)) result.push("spots");
+  if (/リフト|ハリ|弾力|表情筋|たるみ/.test(value)) result.push("firmness");
   return result;
 }
 
