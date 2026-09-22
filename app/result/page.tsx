@@ -1,30 +1,11 @@
 import Link from 'next/link';
-import { getCatalog } from '@/lib/notion/catalog';
-import { rankProducts } from '@/lib/recommendation/score';
-import type { Budget, Concern, Priority } from '@/lib/recommendation/types';
-
-const labels: Record<string, string> = { pores: '毛穴', dryness: '乾燥', spots: 'シミ・くすみ', oiliness: '皮脂・テカリ', low: '〜5,000円', mid: '5,000〜10,000円', high: '10,000円〜', fit: '効果・機能', value: 'コスパ', ingredients: '成分' };
-
-export default async function ResultPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const params = await searchParams;
-  const concern = (Array.isArray(params.concern) ? params.concern[0] : params.concern) as Concern | undefined;
-  const budget = (Array.isArray(params.budget) ? params.budget[0] : params.budget) as Budget | undefined;
-  const priority = (Array.isArray(params.priority) ? params.priority[0] : params.priority) as Priority | undefined;
-  if (!concern || !budget || !priority) return <main className="container result"><h1>条件が不足しています</h1><Link href="/select">選び直す →</Link></main>;
-
-  const products = await getCatalog();
-  const ranked = rankProducts(products, { concern, budget, priority });
-  return <main className="container result">
-    <p className="muted">条件：{labels[concern]} / {labels[budget]} / {labels[priority]}</p>
-    <h1>おすすめ候補</h1>
-    <p className="muted">確認済みの商品だけを条件適合順に表示しています。</p>
-    {ranked.length === 0 ? <section className="card"><h2>現在、条件に合う確認済み商品がありません</h2><p>商品DBの確認が完了した商品が増えるまでお待ちください。</p></section> : <>
-      <section className="card"><h2>第一候補</h2><ProductCard score={ranked[0]} product={products.find(p => p.id === ranked[0].productId)!} primary /></section>
-      {ranked.slice(1).map(score => { const product = products.find(p => p.id === score.productId); return product ? <ProductCard key={product.id} score={score} product={product} /> : null; })}
-    </>}
-  </main>;
-}
-
-function ProductCard({ score, product, primary = false }: any) {
-  return <div className="product"><h2>{product.name}</h2><p>{product.brand} / {product.priceYen ? `${product.priceYen.toLocaleString()}円` : '価格不明'}</p><p>{score.reasons.join('・')}</p>{primary && <span className="tag">スコア {score.score}</span>}<p><Link className={primary ? 'cta' : ''} href={`/product/${product.id}`}>商品詳細 →</Link></p></div>;
+import ShareButton from './ShareButton';
+import {getBeautyType} from '@/lib/diagnosis/types';
+import {getCatalog} from '@/lib/notion/catalog';
+import {rankProducts} from '@/lib/recommendation/score';
+import type {Budget,Concern,Priority} from '@/lib/recommendation/types';
+const labels:Record<string,string>={pores:'毛穴',dryness:'乾燥',spots:'シミ・くすみ',oiliness:'皮脂・テカリ',low:'〜5,000円',mid:'5,000〜10,000円',high:'10,000円〜',fit:'効果・機能',value:'コスパ',ingredients:'成分'};
+export default async function ResultPage({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){
+const p=await searchParams;const type=Array.isArray(p.type)?p.type[0]:p.type;const beauty=getBeautyType(type??'P-A-S-R');const concern=((Array.isArray(p.concern)?p.concern[0]:p.concern)??'pores') as Concern;const budget=((Array.isArray(p.budget)?p.budget[0]:p.budget)??'mid') as Budget;const priority=((Array.isArray(p.priority)?p.priority[0]:p.priority)??'value') as Priority;const products=await getCatalog();const ranked=rankProducts(products,{concern,budget,priority});
+return <main className='result-page'><section className='type-result'><p className='diagnosis-kicker'>YOUR BEAUTY TYPE</p><div className='type-code'>{beauty.code}</div><h1>{beauty.name}</h1><p className='type-catch'>{beauty.catchphrase}</p><p className='type-description'>{beauty.description}</p><div className='type-grid'><span>✓ 自分の選び方がわかる</span><span>✓ 商品選びの軸ができる</span><span>✓ あなた向け商品を確認</span><span>✓ 結果を友達とシェア</span></div><div className='share-row'><ShareButton name={beauty.name}/><Link href='/select'>もう一度診断</Link></div></section><section className='recommendation'><p className='diagnosis-kicker'>YOUR MATCH</p><h2>あなたに合う美容アイテム</h2><p className='muted'>診断結果と「{labels[concern]} / {labels[budget]} / {labels[priority]}」をもとに候補を表示。</p>{ranked.length===0?<div className='card'><h3>現在、条件に合う確認済み商品がありません</h3><p>確認済み商品が増えるまでお待ちください。</p></div>:ranked.slice(0,3).map((score,i)=>{const product=products.find(x=>x.id===score.productId);if(!product)return null;return <div className='product' key={product.id}><div><span className='tag'>{i===0?'第1候補':`候補 ${i+1}`}</span><h3>{product.name}</h3><p>{product.brand} / {product.priceYen?product.priceYen.toLocaleString()+'円':'価格不明'}</p><p>{score.reasons.join('・')}</p></div><Link className='cta' href={'/product/'+product.id}>詳細を見る →</Link></div>})}</section></main>;
 }
